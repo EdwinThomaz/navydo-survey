@@ -672,29 +672,28 @@ async function submitSurvey() {
   const palLabel = PALETTES.find(p=>p.id===state.palette)?.label || '—';
   const logoData = LOGOS.find(l=>l.id===state.logo);
 
-  // ⚠️ Paste your Apps Script web app URL here after deploying
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzA4jMTihjfu3TeoAvnN8ovlL25iG1tm9AVn5EGwc1FX19JuDKpkm9wjAz2MaUwyN1W/exec';
-
   const payload = {
     name: state.name || 'Anonymous',
     role: state.role || '—',
     palette: palLabel,
     logo_choice: state.logo ? `${state.logo} — ${logoData?.name}` : '—',
     lockup_fav: state.favLockup || '—',
-    lockup_ratings: state.lockupRatings,
+    lockup_ratings: JSON.stringify(state.lockupRatings),
     icon_fav: state.favIcon || '—',
-    icon_ratings: state.iconRatings,
+    icon_ratings: JSON.stringify(state.iconRatings),
     comment: document.getElementById('resp-comment').value || '—',
   };
 
   try {
-    const params = new URLSearchParams();
-    params.append('data', JSON.stringify(payload));
-    await fetch(APPS_SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
+    await fetch('https://formspree.io/f/xjgjrlve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
   } catch (err) {
     console.warn('Submission warning:', err);
   }
-  // Always show success — data lands in Sheet regardless of CORS response
+  // Always show success
   document.getElementById('screen-5').classList.remove('active');
   document.getElementById('screen-done').classList.add('active');
   document.getElementById('progressBar').style.opacity = '0';
