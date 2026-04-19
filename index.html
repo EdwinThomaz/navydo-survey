@@ -672,43 +672,28 @@ async function submitSurvey() {
   const palLabel = PALETTES.find(p=>p.id===state.palette)?.label || '—';
   const logoData = LOGOS.find(l=>l.id===state.logo);
 
+  // ⚠️ Paste your Apps Script web app URL here after deploying
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';
+
   const payload = {
-    _subject: `Navydo Survey — ${state.name || 'Anonymous'} voted ${palLabel}`,
     name: state.name || 'Anonymous',
     role: state.role || '—',
     palette: palLabel,
     logo_choice: state.logo ? `${state.logo} — ${logoData?.name}` : '—',
     lockup_fav: state.favLockup || '—',
-    lockup_ratings: JSON.stringify(state.lockupRatings),
+    lockup_ratings: state.lockupRatings,
     icon_fav: state.favIcon || '—',
-    icon_ratings: JSON.stringify(state.iconRatings),
+    icon_ratings: state.iconRatings,
     comment: document.getElementById('resp-comment').value || '—',
-    none_flags: JSON.stringify(state.noneFlags),
   };
 
   try {
-    // ⚠️ Replace YOUR_FORM_ID with your Formspree ID from formspree.io
-    const res = await fetch('https://formspree.io/f/xjgjrlve', {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error();
-    // Save to localStorage so dashboard can read it
-    const stored = JSON.parse(localStorage.getItem('navydo-survey-responses') || '[]');
-    stored.push({
-      name: state.name || 'Anonymous',
-      role: state.role || '—',
-      winner: state.palette,
-      logo: state.logo,
-      lockupRatings: { ...state.lockupRatings },
-      iconRatings: { ...state.iconRatings },
-      favLockup: state.favLockup,
-      favIcon: state.favIcon,
-      comment: document.getElementById('resp-comment').value || '',
-      time: Date.now(),
-    });
-    localStorage.setItem('navydo-survey-responses', JSON.stringify(stored));
+    // No response check needed — Apps Script always receives it
     document.getElementById('screen-5').classList.remove('active');
     document.getElementById('screen-done').classList.add('active');
     document.getElementById('progressBar').style.opacity = '0';

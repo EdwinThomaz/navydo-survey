@@ -113,12 +113,10 @@
 </header>
 
 <div class="sync-bar">
-  <span class="sync-label">Import Formspree CSV</span>
-  <label class="sync-btn" for="csvFileInput" style="cursor:pointer;">↑ Upload CSV</label>
-  <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importCSV(event)"/>
+  <span class="sync-label">Sheet URL</span>
+  <input class="sync-input" id="sheetUrlInput" type="text" placeholder="Paste your Google Sheet URL…"/>
+  <button class="sync-btn" id="syncBtn" onclick="syncFromSheet()">↓ Sync responses</button>
   <span class="sync-status" id="syncStatus"></span>
-  <span style="flex:1"></span>
-  <span style="font-family:var(--font-mono);font-size:10px;opacity:0.35;">Formspree → Submissions → Export CSV → upload here</span>
 </div>
 
 <main>
@@ -352,7 +350,7 @@ function clearAll() {
   render();
 }
 
-// ── CSV IMPORT ──────────────────────────────────────────
+// ── GOOGLE SHEET SYNC ───────────────────────────────────
 const PALETTE_LABEL_MAP = {
   'Forest & Bone': 'forest',
   'Plum & Copper': 'plum',
@@ -360,10 +358,17 @@ const PALETTE_LABEL_MAP = {
   'Clay & Terracotta': 'clay',
 };
 
+const SHEET_URL_KEY = 'navydo-sheet-url';
+
+function extractSheetId(url) {
+  const m = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return m ? m[1] : null;
+}
+
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
-  return lines.slice(1).map(line => {
+  return lines.slice(1).filter(l => l.trim()).map(line => {
     const values = [];
     let cur = '', inQuote = false;
     for (const ch of line) {
@@ -379,46 +384,74 @@ function parseCSV(text) {
 }
 
 function mapRow(row) {
-  const paletteId = PALETTE_LABEL_MAP[row.palette] || row.palette || null;
-  const logoChoice = row.logo_choice ? row.logo_choice.split(/[—\-]/)[0].trim() : null;
+  const paletteId = PALETTE_LABEL_MAP[row['Palette']] || row['Palette'] || null;
+  const logoRaw = row['Logo Choice'] || '';
+  const logoChoice = logoRaw ? logoRaw.split(/[—\-]/)[0].trim() : null;
   let lockupRatings = {}, iconRatings = {};
-  try { lockupRatings = JSON.parse(row.lockup_ratings || '{}'); } catch {}
-  try { iconRatings = JSON.parse(row.icon_ratings || '{}'); } catch {}
+  try { lockupRatings = JSON.parse(row['Lockup Ratings'] || '{}'); } catch {}
+  try { iconRatings = JSON.parse(row['Icon Ratings'] || '{}'); } catch {}
   return {
-    name: row.name || 'Anonymous',
-    role: row.role || '—',
+    name: row['Name'] || 'Anonymous',
+    role: row['Role'] || '—',
     winner: paletteId,
     logo: logoChoice,
     lockupRatings,
     iconRatings,
-    favLockup: row.lockup_fav || null,
-    favIcon: row.icon_fav || null,
-    comment: row.comment || '',
-    time: row._date ? new Date(row._date).getTime() : Date.now(),
+    favLockup: row['Lockup Fav'] || null,
+    favIcon: row['Icon Fav'] || null,
+    comment: row['Comment'] || '',
+    time: row['Timestamp'] ? new Date(row['Timestamp']).getTime() : Date.now(),
   };
 }
 
-function importCSV(event) {
+async function syncFromSheet() {
+  const input = document.getElementById('sheetUrlInput');
+  const btn = document.getElementById('syncBtn');
   const status = document.getElementById('syncStatus');
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const rows = parseCSV(e.target.result);
-      const mapped = rows.map(mapRow);
-      localStorage.setItem(STORE_KEY, JSON.stringify(mapped));
-      status.textContent = `✓ ${mapped.length} response${mapped.length !== 1 ? 's' : ''} imported`;
-      status.style.color = '#6fcf97';
-      render();
-    } catch {
-      status.textContent = 'Could not read CSV. Make sure it\'s the Formspree export file.';
-      status.style.color = '#ff6b6b';
-    }
-    event.target.value = '';
-  };
-  reader.readAsText(file);
+  const url = input.value.trim() || localStorage.getItem(SHEET_URL_KEY);
+
+  if (!url) {
+    status.textContent = 'Paste your Google Sheet URL first.';
+    status.style.color = '#ff6b6b';
+    return;
+  }
+
+  const sheetId = extractSheetId(url);
+  if (!sheetId) {
+    status.textContent = 'Invalid Sheet URL.';
+    status.style.color = '#ff6b6b';
+    return;
+  }
+
+  localStorage.setItem(SHEET_URL_KEY, url);
+  btn.disabled = true;
+  btn.textContent = 'Syncing…';
+  status.textContent = '';
+
+  try {
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+    const res = await fetch(csvUrl);
+    if (!res.ok) throw new Error('Could not fetch sheet. Make sure it is shared publicly.');
+    const text = await res.text();
+    const rows = parseCSV(text);
+    const mapped = rows.map(mapRow);
+    localStorage.setItem(STORE_KEY, JSON.stringify(mapped));
+    status.textContent = `✓ ${mapped.length} response${mapped.length !== 1 ? 's' : ''} synced`;
+    status.style.color = '#6fcf97';
+    render();
+  } catch (err) {
+    status.textContent = err.message || 'Sync failed.';
+    status.style.color = '#ff6b6b';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↓ Sync responses';
+  }
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(SHEET_URL_KEY);
+  if (saved) document.getElementById('sheetUrlInput').value = saved;
+});
 
 render();
 </script>
