@@ -113,10 +113,12 @@
 </header>
 
 <div class="sync-bar">
-  <span class="sync-label">Formspree API Key</span>
-  <input class="sync-input" id="apiKeyInput" type="password" placeholder="Paste your Formspree API key…"/>
-  <button class="sync-btn" id="syncBtn" onclick="syncFromFormspree()">↓ Sync responses</button>
+  <span class="sync-label">Import Formspree CSV</span>
+  <label class="sync-btn" for="csvFileInput" style="cursor:pointer;">↑ Upload CSV</label>
+  <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="importCSV(event)"/>
   <span class="sync-status" id="syncStatus"></span>
+  <span style="flex:1"></span>
+  <span style="font-family:var(--font-mono);font-size:10px;opacity:0.35;">Formspree → Submissions → Export CSV → upload here</span>
 </div>
 
 <main>
@@ -350,10 +352,7 @@ function clearAll() {
   render();
 }
 
-// ── FORMSPREE SYNC ──────────────────────────────────────
-const FORM_ID = 'xjgjrlve';
-const API_KEY_STORE = 'navydo-formspree-apikey';
-
+// ── CSV IMPORT ──────────────────────────────────────────
 const PALETTE_LABEL_MAP = {
   'Forest & Bone': 'forest',
   'Plum & Copper': 'plum',
@@ -361,76 +360,65 @@ const PALETTE_LABEL_MAP = {
   'Clay & Terracotta': 'clay',
 };
 
-function mapFormspreeSubmission(s) {
-  const d = s.data || s;
-  const paletteId = PALETTE_LABEL_MAP[d.palette] || d.palette || null;
-  const logoChoice = d.logo_choice ? d.logo_choice.split(/[—\-]/)[0].trim() : null;
-  let lockupRatings = {};
-  let iconRatings = {};
-  try { lockupRatings = JSON.parse(d.lockup_ratings || '{}'); } catch {}
-  try { iconRatings = JSON.parse(d.icon_ratings || '{}'); } catch {}
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+  return lines.slice(1).map(line => {
+    const values = [];
+    let cur = '', inQuote = false;
+    for (const ch of line) {
+      if (ch === '"') { inQuote = !inQuote; }
+      else if (ch === ',' && !inQuote) { values.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    values.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (values[i] || '').trim(); });
+    return obj;
+  });
+}
+
+function mapRow(row) {
+  const paletteId = PALETTE_LABEL_MAP[row.palette] || row.palette || null;
+  const logoChoice = row.logo_choice ? row.logo_choice.split(/[—\-]/)[0].trim() : null;
+  let lockupRatings = {}, iconRatings = {};
+  try { lockupRatings = JSON.parse(row.lockup_ratings || '{}'); } catch {}
+  try { iconRatings = JSON.parse(row.icon_ratings || '{}'); } catch {}
   return {
-    name: d.name || 'Anonymous',
-    role: d.role || '—',
+    name: row.name || 'Anonymous',
+    role: row.role || '—',
     winner: paletteId,
     logo: logoChoice,
     lockupRatings,
     iconRatings,
-    favLockup: d.lockup_fav || null,
-    favIcon: d.icon_fav || null,
-    comment: d.comment || '',
-    time: s.created_at ? new Date(s.created_at).getTime() : Date.now(),
-    _formspreeId: s.id || null,
+    favLockup: row.lockup_fav || null,
+    favIcon: row.icon_fav || null,
+    comment: row.comment || '',
+    time: row._date ? new Date(row._date).getTime() : Date.now(),
   };
 }
 
-async function syncFromFormspree() {
-  const keyInput = document.getElementById('apiKeyInput');
-  const btn = document.getElementById('syncBtn');
+function importCSV(event) {
   const status = document.getElementById('syncStatus');
-  const apiKey = keyInput.value.trim() || localStorage.getItem(API_KEY_STORE);
-
-  if (!apiKey) {
-    status.textContent = 'Paste your API key first.';
-    status.style.color = '#ff6b6b';
-    return;
-  }
-
-  localStorage.setItem(API_KEY_STORE, apiKey);
-  btn.disabled = true;
-  btn.textContent = 'Syncing…';
-  status.textContent = '';
-
-  try {
-    const res = await fetch(`https://api.formspree.io/api/0/forms/${FORM_ID}/submissions`, {
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' },
-    });
-
-    if (res.status === 401) throw new Error('Invalid API key — check your Formspree account.');
-    if (!res.ok) throw new Error(`Formspree error: ${res.status}`);
-
-    const json = await res.json();
-    const submissions = json.submissions || json.data || [];
-    const mapped = submissions.map(mapFormspreeSubmission);
-
-    localStorage.setItem(STORE_KEY, JSON.stringify(mapped));
-    status.textContent = `✓ ${mapped.length} response${mapped.length !== 1 ? 's' : ''} synced`;
-    status.style.color = '#6fcf97';
-    render();
-  } catch (err) {
-    status.textContent = err.message || 'Sync failed. Try again.';
-    status.style.color = '#ff6b6b';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '↓ Sync responses';
-  }
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const rows = parseCSV(e.target.result);
+      const mapped = rows.map(mapRow);
+      localStorage.setItem(STORE_KEY, JSON.stringify(mapped));
+      status.textContent = `✓ ${mapped.length} response${mapped.length !== 1 ? 's' : ''} imported`;
+      status.style.color = '#6fcf97';
+      render();
+    } catch {
+      status.textContent = 'Could not read CSV. Make sure it\'s the Formspree export file.';
+      status.style.color = '#ff6b6b';
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
-
-// Restore saved API key on load
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem(API_KEY_STORE);
-  if (saved) document.getElementById('apiKeyInput').value = saved;
-});
 
 render();
 </script>
