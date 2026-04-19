@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Navydo · Brand Survey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bone: #F4F1EA;
+  --bone-deep: #E8E3D6;
+  --ink: #14332A;
+  --ink-mid: rgba(20,51,42,0.55);
+  --ink-faint: rgba(20,51,42,0.12);
+  --gold: #C7A560;
+  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --body: 'Figtree', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+html { background: var(--bone); color: var(--ink); font-family: var(--body); scroll-behavior: smooth; }
+body { min-height: 100vh; }
+button { cursor: pointer; font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ── PROGRESS BAR ── */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--bone-deep); z-index: 100;
+  display: flex; gap: 3px; padding: 0 0;
+}
+.progress-seg {
+  flex: 1; height: 100%; background: var(--bone-deep);
+  transition: background 0.4s var(--ease);
+}
+.progress-seg.done { background: var(--ink); }
+.progress-seg.active { background: var(--ink); opacity: 0.5; }
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed; top: 3px; left: 0; right: 0; z-index: 99;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 40px; background: var(--bone);
+  border-bottom: 1px solid var(--ink-faint);
+}
+.site-logo {
+  font-family: var(--sans); font-size: 17px; font-weight: 500;
+  letter-spacing: -0.3px;
+}
+.site-logo span { color: var(--ink); opacity: 0.4; }
+.site-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; opacity: 0.4;
+}
+@media(max-width:500px) { .site-header { padding: 16px 20px; } .site-tag { display:none; } }
+
+/* ── SCREEN WRAPPER ── */
+.screen {
+  display: none; min-height: 100vh;
+  padding: 100px 0 80px;
+}
+.screen.active { display: block; animation: fadeIn 0.3s var(--ease); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.container { max-width: 840px; margin: 0 auto; padding: 0 32px; }
+@media(max-width:600px) { .container { padding: 0 20px; } }
+
+/* ── WELCOME SCREEN ── */
+.welcome-hero {
+  background: var(--ink); color: var(--bone);
+  border-radius: 16px; padding: 52px 48px;
+  margin-bottom: 44px;
+}
+.welcome-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; opacity: 0.5; margin-bottom: 20px;
+}
+.welcome-h1 {
+  font-family: var(--sans); font-size: clamp(28px, 5vw, 52px);
+  font-weight: 500; letter-spacing: -1.5px; line-height: 1.05;
+  margin-bottom: 18px;
+}
+.welcome-p {
+  font-size: 15px; opacity: 0.65; line-height: 1.6; max-width: 520px;
+}
+@media(max-width:600px) { .welcome-hero { padding: 32px 24px; } }
+
+.welcome-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+.field-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2.5px;
+  text-transform: uppercase; opacity: 0.45; margin-bottom: 7px; display: block;
+}
+.field-input, .field-select {
+  width: 100%; padding: 13px 16px;
+  background: white; border: 1.5px solid var(--bone-deep);
+  border-radius: 10px; font-size: 15px; color: var(--ink);
+  outline: none; transition: border-color 0.2s;
+}
+.field-input:focus, .field-select:focus { border-color: var(--ink); }
+.field-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2314332A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; }
+
+/* ── STEP HEADER ── */
+.step-header { margin-bottom: 32px; }
+.step-num {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; opacity: 0.4; margin-bottom: 8px;
+}
+.step-h2 {
+  font-family: var(--sans); font-size: clamp(22px, 4vw, 36px);
+  font-weight: 500; letter-spacing: -1px; margin-bottom: 6px;
+}
+.step-sub { font-size: 14px; color: var(--ink-mid); }
+
+/* ── PALETTE GRID ── */
+.palette-grid {
+  display: flex; flex-wrap: wrap; gap: 20px;
+  justify-content: center; margin-bottom: 28px;
+}
+.palette-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; cursor: pointer; position: relative;
+}
+.palette-circle {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 3px solid transparent; transition: all 0.2s var(--ease);
+  position: relative; overflow: hidden;
+}
+.palette-item:hover .palette-circle { transform: scale(1.05); }
+.palette-item.selected .palette-circle {
+  border-color: var(--ink); box-shadow: 0 0 0 3px var(--bone), 0 0 0 5px var(--ink);
+}
+.palette-circle svg { width: 100%; height: 100%; }
+.palette-name {
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  text-align: center; letter-spacing: -0.2px;
+}
+.palette-hex {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.5px;
+  opacity: 0.45; text-align: center;
+}
+
+/* ── LOGO GRID ── */
+.logo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+@media(max-width:700px) { .logo-grid { grid-template-columns: 1fr 1fr; } }
+.logo-card {
+  border: 2px solid var(--ink-faint); border-radius: 10px;
+  overflow: hidden; cursor: pointer; transition: all 0.2s;
+  background: white;
+}
+.logo-card:hover { border-color: rgba(20,51,42,0.3); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+.logo-card.selected { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.logo-card-img { aspect-ratio: 1; padding: 8px; background: var(--bone); }
+.logo-card-img img { width: 100%; height: 100%; object-fit: contain; }
+.logo-card-info { padding: 10px 12px; border-top: 1px solid var(--ink-faint); }
+.logo-card-name { font-family: var(--sans); font-size: 13px; font-weight: 600; }
+.logo-card-option { font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.4; }
+.logo-card-desc { font-size: 11px; opacity: 0.55; margin-top: 2px; }
+
+/* ── RATING GRID ── */
+.rating-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+@media(max-width:700px) { .rating-grid { grid-template-columns: 1fr; } }
+.rating-card {
+  border: 1.5px solid var(--ink-faint); border-radius: 12px;
+  overflow: hidden; background: white; transition: border-color 0.2s;
+}
+.rating-card.has-rating { border-color: rgba(20,51,42,0.35); }
+.rating-card-img { aspect-ratio: 4/3; overflow: hidden; background: var(--bone); }
+.rating-card-img img { width: 100%; height: 100%; object-fit: contain; padding: 16px; }
+.rating-card-info { padding: 14px 16px; border-top: 1.5px solid var(--ink-faint); }
+.rating-card-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.rating-card-name { font-family: var(--sans); font-size: 14px; font-weight: 600; }
+.rating-card-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.4; }
+.rating-card-desc { font-size: 12px; opacity: 0.5; margin-bottom: 12px; }
+.rating-row { display: flex; align-items: center; gap: 6px; }
+.rating-label { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.4; margin-right: 4px; }
+.r-btn {
+  width: 36px; height: 36px; border-radius: 7px;
+  border: 1.5px solid var(--ink-faint); background: transparent;
+  font-family: var(--mono); font-size: 13px; color: var(--ink);
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+}
+.r-btn:hover { border-color: var(--ink); background: var(--bone); }
+.r-btn.active { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+
+/* ── SUMMARY SCREEN ── */
+.summary-card {
+  border: 1.5px solid var(--ink-faint); border-radius: 12px;
+  overflow: hidden; margin-bottom: 28px;
+}
+.summary-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--ink-faint);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-key {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; opacity: 0.4;
+}
+.summary-val { font-family: var(--sans); font-size: 15px; font-weight: 500; }
+.comment-area { display: flex; flex-direction: column; gap: 7px; margin-bottom: 32px; }
+.comment-textarea {
+  width: 100%; padding: 14px 16px; background: white;
+  border: 1.5px solid var(--bone-deep); border-radius: 10px;
+  font-size: 15px; color: var(--ink); outline: none;
+  transition: border-color 0.2s; min-height: 100px; resize: vertical;
+}
+.comment-textarea:focus { border-color: var(--ink); }
+
+/* ── NONE OPTION ── */
+.none-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px; margin-bottom: 24px;
+  border: 1.5px dashed var(--ink-faint); border-radius: 10px;
+  cursor: pointer; font-size: 13px; color: var(--ink-mid);
+  font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; font-size: 10px;
+  transition: all 0.2s;
+}
+.none-option:hover { border-color: rgba(20,51,42,0.3); color: var(--ink); }
+.none-option.active { background: rgba(20,51,42,0.05); border-color: var(--ink); color: var(--ink); }
+
+/* ── NAV BUTTONS ── */
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 32px; border-top: 1px solid var(--ink-faint);
+}
+.btn-back {
+  background: transparent; border: 1.5px solid var(--ink-faint);
+  color: var(--ink); padding: 11px 22px; border-radius: 100px;
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--ink); background: rgba(20,51,42,0.05); }
+.btn-next {
+  background: var(--ink); color: var(--bone);
+  border: none; padding: 13px 28px; border-radius: 100px;
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  transition: all 0.2s; letter-spacing: -0.2px;
+}
+.btn-next:hover { opacity: 0.85; transform: translateX(2px); }
+.btn-next:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+/* ── THANK YOU ── */
+#screen-done { display: none; align-items: center; justify-content: center; }
+#screen-done.active { display: flex; flex-direction: column; text-align: center; padding: 140px 32px; }
+.done-big { font-family: var(--sans); font-size: clamp(60px, 12vw, 120px); font-weight: 500; letter-spacing: -4px; line-height: 0.9; opacity: 0.08; }
+.done-h { font-family: var(--sans); font-size: 36px; font-weight: 500; letter-spacing: -1px; margin-top: -20px; }
+.done-p { font-size: 15px; opacity: 0.5; max-width: 360px; margin: 12px auto 0; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress" id="progressBar">
+  <div class="progress-seg" id="seg0"></div>
+  <div class="progress-seg" id="seg1"></div>
+  <div class="progress-seg" id="seg2"></div>
+  <div class="progress-seg" id="seg3"></div>
+  <div class="progress-seg" id="seg4"></div>
+  <div class="progress-seg" id="seg5"></div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="site-logo">Navydo <span>.</span></div>
+  <div class="site-tag">Brand Survey · 2026</div>
+</header>
+
+<!-- ══ SCREEN 0: WELCOME ══════════════════════════════════ -->
+<div class="screen active" id="screen-0">
+  <div class="container">
+    <div class="welcome-hero">
+      <div class="welcome-tag">Help us pick a direction</div>
+      <div class="welcome-h1">We're choosing how<br/>Navydo looks.<br/>Your eye, our compass.</div>
+      <p class="welcome-p">Seven palettes, eight logo concepts, four lockups, four app icons. Takes about 3 minutes — rate what you like, flag what falls flat, go with your gut.</p>
+    </div>
+    <div class="welcome-fields">
+      <div>
+        <label class="field-label" for="resp-name">Your name</label>
+        <input class="field-input" id="resp-name" type="text" placeholder="How should we credit your taste?" autocomplete="off"/>
+      </div>
+      <div>
+        <label class="field-label" for="resp-role">Your role</label>
+        <select class="field-select" id="resp-role">
+          <option value="">Pick one…</option>
+          <option>Driver / Travel Partner</option>
+          <option>Customer / Passenger</option>
+          <option>Navydo Team</option>
+          <option>Advisor / Investor</option>
+          <option>Designer</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn-next" onclick="startSurvey()">Start →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 1: PALETTE ══════════════════════════════════ -->
+<div class="screen" id="screen-1">
+  <div class="container">
+    <div class="step-header">
+      <div class="step-num">Step 1 of 4</div>
+      <h2 class="step-h2">Pick a palette.</h2>
+      <p class="step-sub">Colors set the mood. Tap a circle.</p>
+    </div>
+    <div class="palette-grid" id="paletteGrid"></div>
+    <div class="none-option" id="noPalette" onclick="toggleNone('palette')">
+      <span>+</span> None of these excite me — give feedback
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(0)">← Back</button>
+      <button class="btn-next" id="nextFromPalette" onclick="goTo(2)" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 2: LOGO CONCEPT ═════════════════════════════ -->
+<div class="screen" id="screen-2">
+  <div class="container">
+    <div class="step-header">
+      <div class="step-num">Step 2 of 4</div>
+      <h2 class="step-h2">Which logo concept feels most Navydo?</h2>
+      <p class="step-sub" id="logoPaletteSub">Shown in your chosen palette. Pick the mark that feels most Navydo.</p>
+    </div>
+    <div class="logo-grid" id="logoGrid"></div>
+    <div class="none-option" id="noLogo" onclick="toggleNone('logo')">
+      <span>+</span> None of these excite me — try different logo directions
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+      <button class="btn-next" id="nextFromLogo" onclick="goTo(3)" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3: LOCKUPS ══════════════════════════════════ -->
+<div class="screen" id="screen-3">
+  <div class="container">
+    <div class="step-header">
+      <div class="step-num">Step 3 of 4</div>
+      <h2 class="step-h2">Which lockup works best?</h2>
+      <p class="step-sub">Here's your chosen palette. Pick your favourite layout — rate the others too.</p>
+    </div>
+    <div class="rating-grid" id="lockupGrid"></div>
+    <div class="none-option" id="noLockup" onclick="toggleNone('lockup')">
+      <span>+</span> None feel right — leave a note at the end
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+      <button class="btn-next" onclick="goTo(4)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 4: APP ICONS ════════════════════════════════ -->
+<div class="screen" id="screen-4">
+  <div class="container">
+    <div class="step-header">
+      <div class="step-num">Step 4 of 4</div>
+      <h2 class="step-h2">Rate the app icons.</h2>
+      <p class="step-sub">How it'll look on your phone's home screen. Rate each 1–5.</p>
+    </div>
+    <div class="rating-grid" id="iconGrid"></div>
+    <div class="none-option" id="noIcon" onclick="toggleNone('icon')">
+      <span>+</span> None feel home-screen-worthy — tell us why
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(3)">← Back</button>
+      <button class="btn-next" onclick="goTo(5)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 5: REVIEW + SUBMIT ══════════════════════════ -->
+<div class="screen" id="screen-5">
+  <div class="container">
+    <div class="step-header">
+      <div class="step-num" style="color:#7a9e6a">Almost done</div>
+      <h2 class="step-h2">Last thing — the why.</h2>
+      <p class="step-sub">Tell us what clicked (or didn't). One sentence is plenty.</p>
+    </div>
+    <div class="summary-card" id="summaryCard"></div>
+    <div class="comment-area">
+      <label class="field-label" for="resp-comment">Any thoughts? Concerns about readability, tone, fit?</label>
+      <textarea class="comment-textarea" id="resp-comment" placeholder="Totally optional. But we read every one."></textarea>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(4)">← Back</button>
+      <button class="btn-next" id="submitBtn" onclick="submitSurvey()">Send my answers</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DONE ════════════════════════════════════════════════ -->
+<div class="screen" id="screen-done">
+  <div class="done-big">✓</div>
+  <h2 class="done-h">Thank you!</h2>
+  <p class="done-p">Your vote is in. The Navydo team will review all responses and share the winner soon.</p>
+</div>
+
+<script>
+// ── DATA ───────────────────────────────────────────────
+const PALETTES = [
+  { id:'forest',   label:'Forest & Bone',     hex1:'#14332A', hex2:'#3A6B4F', hex3:'#C7A560', hex4:'#E8E3D6', hex5:'#7BA188' },
+  { id:'plum',     label:'Plum & Copper',      hex1:'#3B1E3A', hex2:'#B66E3C', hex3:'#E8C48A', hex4:'#E4D9C8', hex5:'#D9A47B' },
+  { id:'midnight', label:'Midnight & Cyan',    hex1:'#0E1B3A', hex2:'#2EA6B8', hex3:'#D6B370', hex4:'#DAD6C8', hex5:'#86CDD6' },
+  { id:'clay',     label:'Clay & Terracotta',  hex1:'#2B1A12', hex2:'#C5572A', hex3:'#D9A461', hex4:'#E3D4BA', hex5:'#E39267' },
+  { id:'meadow',   label:'Meadow & Lime',      hex1:'#2E4A2C', hex2:'#8BC34A', hex3:'#E2D67A', hex4:'#DFE1CB', hex5:'#C6E29A' },
+  { id:'linen',    label:'Linen & Sage',       hex1:'#2A3A2E', hex2:'#7E9B74', hex3:'#D4C9A0', hex4:'#EBE6D8', hex5:'#A5C49E' },
+  { id:'paper',    label:'Paper & Cobalt',     hex1:'#1C2E52', hex2:'#3E5BB5', hex3:'#D4A832', hex4:'#E8E4DA', hex5:'#7D99D8' },
+];
+
+const LOGOS = [
+  { id:'A', name:'Nas route',    option:'A', tag:'Primary', desc:'Pickup → Drop-off' },
+  { id:'B', name:'Route Badge',  option:'B', tag:'Rounded square', desc:'App-ready' },
+  { id:'C', name:'Keyhole',      option:'C', tag:'Negative N', desc:'Chunky' },
+  { id:'D', name:'Needle Compass',option:'D',tag:'N as compass', desc:'Needle' },
+  { id:'E', name:'Signal N',     option:'E', tag:'Broadcast', desc:'Waves' },
+  { id:'F', name:'Arrow N',      option:'F', tag:'Diagonal N', desc:'Becomes an arrow' },
+  { id:'G', name:'Split N',      option:'G', tag:'Two-tone', desc:'Ink meets accent' },
+  { id:'H', name:'Editorial N',  option:'H', tag:'Serif', desc:'Quiet & premium' },
+];
+
+const LOCKUPS = [
+  { id:'primary',   name:'Primary',   tag:'Mark + wordmark', desc:'Bone background' },
+  { id:'reverse',   name:'Reverse',   tag:'Mark + wordmark', desc:'Dark background' },
+  { id:'stacked',   name:'Stacked',   tag:'Centered',        desc:'Tagline below' },
+  { id:'monogram',  name:'Monogram',  tag:'Mark only',       desc:'No wordmark' },
+];
+
+const ICONS = [
+  { id:'v1', name:'Dark ink',  tag:'Classic',   desc:'Bone mark on deep ink' },
+  { id:'v2', name:'Accent',    tag:'Brighter',  desc:'Mark on accent colour' },
+  { id:'v3', name:'Light',     tag:'Airy',      desc:'Bone tile, ink mark' },
+  { id:'v4', name:'Gradient',  tag:'Premium',   desc:'Ink → accent' },
+];
+
+// ── STATE ──────────────────────────────────────────────
+const state = {
+  name: '', role: '',
+  palette: null,
+  logo: null,
+  lockupRatings: {},
+  iconRatings: {},
+  favLockup: null,
+  favIcon: null,
+  comment: '',
+  noneFlags: {},
+};
+
+let currentScreen = 0;
+
+// ── NAVIGATION ─────────────────────────────────────────
+function goTo(n) {
+  document.getElementById(`screen-${currentScreen}`).classList.remove('active');
+  currentScreen = n;
+  const next = document.getElementById(`screen-${n}`);
+  next.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateProgress(n);
+  if (n === 2) buildLogoGrid();
+  if (n === 3) buildLockupGrid();
+  if (n === 4) buildIconGrid();
+  if (n === 5) buildSummary();
+}
+
+function startSurvey() {
+  state.name = document.getElementById('resp-name').value.trim();
+  state.role = document.getElementById('resp-role').value;
+  goTo(1);
+}
+
+function updateProgress(n) {
+  const segs = [0,1,2,3,4,5];
+  segs.forEach(i => {
+    const el = document.getElementById(`seg${i}`);
+    el.classList.remove('done','active');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  });
+}
+
+function toggleNone(key) {
+  state.noneFlags[key] = !state.noneFlags[key];
+  document.getElementById(`no${key.charAt(0).toUpperCase()+key.slice(1)}`).classList.toggle('active', state.noneFlags[key]);
+}
+
+// ── PALETTE WHEEL SVG ──────────────────────────────────
+function palettePie(p) {
+  const cx = 60, cy = 60, r = 60, inner = 22;
+  const colors = [p.hex1, p.hex2, p.hex3, p.hex4, p.hex5];
+  const n = colors.length;
+  const step = (2 * Math.PI) / n;
+
+  let paths = '';
+  for (let i = 0; i < n; i++) {
+    const a1 = i * step - Math.PI/2;
+    const a2 = (i+1) * step - Math.PI/2;
+    const x1o = cx + r * Math.cos(a1), y1o = cy + r * Math.sin(a1);
+    const x2o = cx + r * Math.cos(a2), y2o = cy + r * Math.sin(a2);
+    const x1i = cx + inner * Math.cos(a1), y1i = cy + inner * Math.sin(a1);
+    const x2i = cx + inner * Math.cos(a2), y2i = cy + inner * Math.sin(a2);
+    const large = n > 2 ? 0 : 1;
+    paths += `<path d="M${x1i},${y1i} L${x1o},${y1o} A${r},${r},0,${large},1,${x2o},${y2o} L${x2i},${y2i} A${inner},${inner},0,${large},0,${x1i},${y1i} Z" fill="${colors[i]}"/>`;
+  }
+
+  // Center circle with N
+  paths += `<circle cx="${cx}" cy="${cy}" r="${inner}" fill="white"/>`;
+  paths += `<text x="${cx}" y="${cy+6}" text-anchor="middle" font-family="'Instrument Sans',sans-serif" font-size="15" font-weight="600" fill="${p.hex1}">N.</text>`;
+
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+}
+
+// ── BUILD PALETTE GRID ──────────────────────────────────
+function buildPaletteGrid() {
+  const grid = document.getElementById('paletteGrid');
+  grid.innerHTML = PALETTES.map(p => `
+    <div class="palette-item ${state.palette===p.id?'selected':''}" id="pal-${p.id}" onclick="selectPalette('${p.id}')">
+      <div class="palette-circle">${palettePie(p)}</div>
+      <div class="palette-name">${p.label}</div>
+      <div class="palette-hex">${p.hex1} · ${p.hex2}</div>
+    </div>
+  `).join('');
+}
+
+function selectPalette(id) {
+  state.palette = id;
+  buildPaletteGrid();
+  document.getElementById('nextFromPalette').disabled = false;
+}
+
+// ── BUILD LOGO GRID ─────────────────────────────────────
+function buildLogoGrid() {
+  const pal = state.palette || 'midnight';
+  const grid = document.getElementById('logoGrid');
+  const palLabel = PALETTES.find(p=>p.id===pal)?.label || '';
+  document.getElementById('logoPaletteSub').textContent = `Shown in ${palLabel}. Pick the mark that feels most Navydo.`;
+  grid.innerHTML = LOGOS.map(l => `
+    <div class="logo-card ${state.logo===l.id?'selected':''}" id="logo-${l.id}" onclick="selectLogo('${l.id}')">
+      <div class="logo-card-img">
+        <img src="survey-assets/logos/logo-${l.id}-${pal}.png" alt="${l.name}" loading="lazy"/>
+      </div>
+      <div class="logo-card-info">
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <div class="logo-card-name">${l.name}</div>
+          <div class="logo-card-option">Option ${l.option}</div>
+        </div>
+        <div class="logo-card-tag" style="font-family:var(--mono);font-size:9px;letter-spacing:1.2px;text-transform:uppercase;opacity:0.4">${l.tag}</div>
+        <div class="logo-card-desc">${l.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectLogo(id) {
+  state.logo = id;
+  buildLogoGrid();
+  document.getElementById('nextFromLogo').disabled = false;
+}
+
+// ── BUILD LOCKUP GRID ───────────────────────────────────
+function buildLockupGrid() {
+  const pal = state.palette || 'midnight';
+  const grid = document.getElementById('lockupGrid');
+  grid.innerHTML = LOCKUPS.map(l => {
+    const rating = state.lockupRatings[l.id] || 0;
+    const stars = [1,2,3,4,5].map(n =>
+      `<button class="r-btn ${rating>=n?'active':''}" onclick="rateLockup('${l.id}',${n})">${n}</button>`
+    ).join('');
+    return `
+      <div class="rating-card ${rating?'has-rating':''}" id="lcard-${l.id}">
+        <div class="rating-card-img">
+          <img src="survey-assets/lockups/lockup-${l.id}-${pal}.png" alt="${l.name}" loading="lazy"/>
+        </div>
+        <div class="rating-card-info">
+          <div class="rating-card-header">
+            <div class="rating-card-name">${l.name}</div>
+            <div class="rating-card-tag">${l.tag} · ${l.desc}</div>
+          </div>
+          <div class="rating-label" style="margin-bottom:8px">Rate this lockup</div>
+          <div class="rating-row">${stars}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function rateLockup(id, val) {
+  state.lockupRatings[id] = val;
+  // Update highest-rated as fav
+  const maxId = Object.entries(state.lockupRatings).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  state.favLockup = maxId;
+  buildLockupGrid();
+}
+
+// ── BUILD ICON GRID ─────────────────────────────────────
+function buildIconGrid() {
+  const pal = state.palette || 'midnight';
+  const grid = document.getElementById('iconGrid');
+  grid.innerHTML = ICONS.map(ic => {
+    const rating = state.iconRatings[ic.id] || 0;
+    const stars = [1,2,3,4,5].map(n =>
+      `<button class="r-btn ${rating>=n?'active':''}" onclick="rateIcon('${ic.id}',${n})">${n}</button>`
+    ).join('');
+    return `
+      <div class="rating-card ${rating?'has-rating':''}" id="icard-${ic.id}">
+        <div class="rating-card-img" style="aspect-ratio:1">
+          <img src="survey-assets/icons/icon-${ic.id}-${pal}.png" alt="${ic.name}" loading="lazy"/>
+        </div>
+        <div class="rating-card-info">
+          <div class="rating-card-header">
+            <div class="rating-card-name">${ic.name}</div>
+            <div class="rating-card-tag">${ic.tag} · ${ic.desc}</div>
+          </div>
+          <div class="rating-label" style="margin-bottom:8px">Rate this icon</div>
+          <div class="rating-row">${stars}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function rateIcon(id, val) {
+  state.iconRatings[id] = val;
+  const maxId = Object.entries(state.iconRatings).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  state.favIcon = maxId;
+  buildIconGrid();
+}
+
+// ── BUILD SUMMARY ───────────────────────────────────────
+function buildSummary() {
+  const palLabel = PALETTES.find(p=>p.id===state.palette)?.label || '—';
+  const logoLabel = state.logo ? `${state.logo} · ${LOGOS.find(l=>l.id===state.logo)?.name}` : '—';
+  const lockupLabel = state.favLockup ? `${LOCKUPS.find(l=>l.id===state.favLockup)?.name}` : '—';
+  const iconLabel = state.favIcon ? `${ICONS.find(i=>i.id===state.favIcon)?.name}` : '—';
+
+  document.getElementById('summaryCard').innerHTML = `
+    <div class="summary-row"><div class="summary-key">Palette</div><div class="summary-val">${palLabel}</div></div>
+    <div class="summary-row"><div class="summary-key">Logo concept</div><div class="summary-val">${logoLabel}</div></div>
+    <div class="summary-row"><div class="summary-key">Lockup</div><div class="summary-val">${lockupLabel}</div></div>
+    <div class="summary-row"><div class="summary-key">App icon</div><div class="summary-val">${iconLabel}</div></div>
+  `;
+}
+
+// ── SUBMIT ──────────────────────────────────────────────
+async function submitSurvey() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const palLabel = PALETTES.find(p=>p.id===state.palette)?.label || '—';
+  const logoData = LOGOS.find(l=>l.id===state.logo);
+
+  const payload = {
+    _subject: `Navydo Survey — ${state.name || 'Anonymous'} voted ${palLabel}`,
+    name: state.name || 'Anonymous',
+    role: state.role || '—',
+    palette: palLabel,
+    logo_choice: state.logo ? `${state.logo} — ${logoData?.name}` : '—',
+    lockup_fav: state.favLockup || '—',
+    lockup_ratings: JSON.stringify(state.lockupRatings),
+    icon_fav: state.favIcon || '—',
+    icon_ratings: JSON.stringify(state.iconRatings),
+    comment: document.getElementById('resp-comment').value || '—',
+    none_flags: JSON.stringify(state.noneFlags),
+  };
+
+  try {
+    // ⚠️ Replace YOUR_FORM_ID with your Formspree ID from formspree.io
+    const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('screen-5').classList.remove('active');
+    document.getElementById('screen-done').classList.add('active');
+    document.getElementById('progressBar').style.opacity = '0';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Send my answers';
+    alert('Something went wrong. Please try again or contact edwin.thomas@navydo.com');
+  }
+}
+
+// ── INIT ────────────────────────────────────────────────
+buildPaletteGrid();
+updateProgress(0);
+</script>
+</body>
+</html>
