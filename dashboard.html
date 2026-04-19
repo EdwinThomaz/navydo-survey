@@ -29,27 +29,14 @@
   .logo-text { font-family: var(--font-sans); font-size: 18px; font-weight: 600; letter-spacing: -0.4px; }
   .logo-sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.4; margin-top: 2px; }
 
-  .add-btn {
-    background: var(--gold); color: #1a1a1a;
-    border: none; padding: 10px 22px; border-radius: 7px;
-    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
-    cursor: pointer; transition: opacity 0.2s;
-  }
-  .add-btn:hover { opacity: 0.85; }
-
   main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 80px; }
 
-  /* STATS ROW */
   .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
   @media(max-width:700px) { .stats-row { grid-template-columns: 1fr 1fr; } }
-  .stat-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 20px;
-  }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
   .stat-val { font-family: var(--font-sans); font-size: 40px; font-weight: 500; letter-spacing: -2px; line-height: 1; }
   .stat-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.4; margin-top: 6px; }
 
-  /* SECTION */
   .section-title {
     font-family: var(--font-sans); font-size: 20px; font-weight: 500; letter-spacing: -0.4px;
     margin-bottom: 16px; padding-bottom: 12px;
@@ -60,46 +47,27 @@
 
   .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
   @media(max-width:700px) { .charts-grid { grid-template-columns: 1fr; } }
-
-  .chart-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px;
-  }
+  .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
   .chart-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.45; margin-bottom: 20px; }
 
-  /* BAR CHARTS */
-  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .bar-name { font-size: 13px; font-weight: 500; min-width: 110px; }
-  .bar-track { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 28px; overflow: hidden; position: relative; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-name { font-size: 13px; font-weight: 500; min-width: 120px; }
+  .bar-track { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 28px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; display: flex; align-items: center; padding-left: 10px; }
   .bar-score { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: rgba(0,0,0,0.6); }
   .bar-count { font-family: var(--font-mono); font-size: 10px; opacity: 0.4; min-width: 30px; text-align: right; }
 
-  /* WINNER CHART */
   .winner-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   @media(max-width:600px) { .winner-grid { grid-template-columns: 1fr 1fr; } }
-  .winner-stat {
-    border-radius: 8px; padding: 16px 12px 12px;
-    display: flex; flex-direction: column; gap: 8px;
-  }
+  .winner-stat { border-radius: 8px; padding: 16px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
   .winner-count { font-family: var(--font-sans); font-size: 32px; font-weight: 500; letter-spacing: -1.5px; line-height: 1; }
   .winner-name { font-size: 12px; font-weight: 500; opacity: 0.9; }
   .winner-pct { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; opacity: 0.55; }
 
-  /* RESPONSES TABLE */
-  .responses-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-    overflow: hidden; margin-bottom: 36px;
-  }
-  .responses-header {
-    padding: 16px 20px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .responses-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 36px; }
+  .responses-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th {
-    text-align: left; padding: 10px 16px;
-    font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.35;
-    border-bottom: 1px solid var(--border);
-  }
+  th { text-align: left; padding: 10px 16px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.35; border-bottom: 1px solid var(--border); }
   td { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.02); }
@@ -107,42 +75,6 @@
   .del-btn { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 14px; opacity: 0.5; }
   .del-btn:hover { opacity: 1; }
   .empty-state { padding: 48px; text-align: center; opacity: 0.3; font-size: 14px; }
-
-  /* MODAL */
-  .modal-bg {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7); z-index: 200;
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  .modal-bg.open { display: flex; }
-  .modal {
-    background: #2a2a2a; border: 1px solid #444; border-radius: 14px;
-    padding: 32px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
-  }
-  .modal h3 { font-family: var(--font-sans); font-size: 20px; font-weight: 500; margin-bottom: 24px; letter-spacing: -0.4px; }
-  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .modal-field { display: flex; flex-direction: column; gap: 6px; }
-  .modal-field.full { grid-column: 1 / -1; }
-  .modal-field label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.45; }
-  .modal-input {
-    background: #333; border: 1px solid #444; border-radius: 7px;
-    padding: 10px 12px; color: #e8e3d6; font-family: var(--font-body); font-size: 14px; outline: none;
-  }
-  .modal-input:focus { border-color: var(--gold); }
-  .rating-row { display: flex; gap: 6px; }
-  .r-btn {
-    flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #333;
-    color: #e8e3d6; cursor: pointer; font-family: var(--font-mono); font-size: 13px; text-align: center;
-    transition: background 0.15s;
-  }
-  .r-btn.sel { background: var(--gold); color: #1a1a1a; border-color: var(--gold); font-weight: 700; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-  .cancel-btn { background: none; border: 1px solid #444; color: #aaa; padding: 10px 20px; border-radius: 7px; cursor: pointer; font-family: var(--font-sans); font-size: 14px; }
-  .save-btn { background: var(--gold); color: #1a1a1a; border: none; padding: 10px 24px; border-radius: 7px; cursor: pointer; font-family: var(--font-sans); font-size: 14px; font-weight: 600; }
-
-  .winner-select { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .w-opt { padding: 10px; border-radius: 7px; border: 1.5px solid #444; cursor: pointer; font-size: 13px; text-align: center; transition: all 0.15s; }
-  .w-opt.sel { border-color: var(--gold); color: var(--gold); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -157,87 +89,76 @@
       <div class="logo-sub">Brand palette results</div>
     </div>
   </div>
-  <button class="add-btn" onclick="openModal()">+ Log a response</button>
+  <button onclick="clearAll()" style="background:none;border:1px solid #444;color:#ff6b6b;padding:10px 18px;border-radius:7px;font-family:var(--font-sans);font-size:13px;cursor:pointer;">Clear all</button>
 </header>
 
 <main>
-  <!-- STATS -->
   <div class="stats-row" id="statsRow"></div>
 
-  <!-- CHARTS -->
-  <div class="section-title"><span class="tag">01</span> Logo ratings</div>
-  <div class="charts-grid" id="logoCharts"></div>
-
-  <div class="section-title"><span class="tag">02</span> App icon ratings</div>
-  <div class="charts-grid" id="iconCharts"></div>
-
-  <div class="section-title" style="margin-top:8px"><span class="tag">03</span> Overall winner votes</div>
+  <div class="section-title"><span class="tag">01</span> Palette votes</div>
   <div class="chart-card" style="margin-bottom:36px">
-    <div class="chart-label">Which palette should Navydo launch with?</div>
-    <div class="winner-grid" id="winnerChart"></div>
+    <div class="chart-label">Which palette did each person choose?</div>
+    <div class="winner-grid" id="paletteChart"></div>
   </div>
 
-  <!-- RESPONSES TABLE -->
-  <div class="section-title"><span class="tag">04</span> All responses</div>
+  <div class="section-title"><span class="tag">02</span> Logo popularity</div>
+  <div class="chart-card" style="margin-bottom:36px">
+    <div class="chart-label">Which logo concept was picked most?</div>
+    <div id="logoChart"></div>
+  </div>
+
+  <div class="section-title"><span class="tag">03</span> App icon ratings</div>
+  <div class="chart-card" style="margin-bottom:36px">
+    <div class="chart-label">Average star rating per icon version</div>
+    <div id="iconChart"></div>
+  </div>
+
+  <div class="section-title"><span class="tag">04</span> Lockup ratings</div>
+  <div class="chart-card" style="margin-bottom:36px">
+    <div class="chart-label">Average star rating per lockup layout</div>
+    <div id="lockupChart"></div>
+  </div>
+
+  <div class="section-title"><span class="tag">05</span> All responses</div>
   <div class="responses-card">
     <div class="responses-header">
       <span style="font-size:14px;opacity:0.6">Individual votes</span>
-      <button onclick="clearAll()" style="background:none;border:none;color:#ff6b6b;font-size:12px;cursor:pointer;opacity:0.6">Clear all</button>
     </div>
     <div id="responsesTable"></div>
   </div>
 </main>
 
-<!-- ADD RESPONSE MODAL -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h3>Log a survey response</h3>
-    <div class="modal-grid">
-      <div class="modal-field">
-        <label>Name (optional)</label>
-        <input class="modal-input" id="m-name" type="text" placeholder="Respondent name"/>
-      </div>
-      <div class="modal-field">
-        <label>Role (optional)</label>
-        <input class="modal-input" id="m-role" type="text" placeholder="e.g. Driver, Customer"/>
-      </div>
-
-      <!-- Logo ratings -->
-      <div class="modal-field full" style="margin-top:4px">
-        <label style="margin-bottom:8px">Logo ratings (tap to select)</label>
-        <div style="display:flex;flex-direction:column;gap:8px" id="logoRatings"></div>
-      </div>
-
-      <!-- Icon ratings -->
-      <div class="modal-field full">
-        <label style="margin-bottom:8px">App icon ratings</label>
-        <div style="display:flex;flex-direction:column;gap:8px" id="iconRatings"></div>
-      </div>
-
-      <!-- Winner -->
-      <div class="modal-field full">
-        <label style="margin-bottom:8px">Overall winner pick</label>
-        <div class="winner-select" id="winnerSelect"></div>
-      </div>
-
-      <div class="modal-field full">
-        <label>Comment (optional)</label>
-        <textarea class="modal-input" id="m-comment" rows="3" placeholder="Any notes from this response"></textarea>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-      <button class="save-btn" onclick="saveResponse()">Save response</button>
-    </div>
-  </div>
-</div>
-
 <script>
 const PALETTES = [
-  { id:'forest', label:'Forest & Bone',    color:'#3A6B4F', bg:'#14332A' },
-  { id:'plum',   label:'Plum & Copper',    color:'#B66E3C', bg:'#3B1E3A' },
-  { id:'midnight',label:'Midnight & Cyan', color:'#2EA6B8', bg:'#0E1B3A' },
-  { id:'clay',   label:'Clay & Terracotta',color:'#C5572A', bg:'#2B1A12' },
+  { id:'forest',   label:'Forest & Bone',     color:'#3A6B4F', bg:'#14332A22' },
+  { id:'plum',     label:'Plum & Copper',      color:'#B66E3C', bg:'#3B1E3A22' },
+  { id:'midnight', label:'Midnight & Cyan',    color:'#2EA6B8', bg:'#0E1B3A22' },
+  { id:'clay',     label:'Clay & Terracotta',  color:'#C5572A', bg:'#2B1A1222' },
+];
+
+const LOGOS = [
+  { id:'A', name:'Nas route' },
+  { id:'B', name:'Route Badge' },
+  { id:'C', name:'Keyhole' },
+  { id:'D', name:'Needle Compass' },
+  { id:'E', name:'Signal N' },
+  { id:'F', name:'Arrow N' },
+  { id:'G', name:'Split N' },
+  { id:'H', name:'Editorial N' },
+];
+
+const LOCKUPS = [
+  { id:'primary',  name:'Primary' },
+  { id:'reverse',  name:'Reverse' },
+  { id:'stacked',  name:'Stacked' },
+  { id:'monogram', name:'Monogram' },
+];
+
+const ICONS = [
+  { id:'v1', name:'Dark ink' },
+  { id:'v2', name:'Accent' },
+  { id:'v3', name:'Light' },
+  { id:'v4', name:'Gradient' },
 ];
 
 const STORE_KEY = 'navydo-survey-responses';
@@ -245,31 +166,33 @@ const STORE_KEY = 'navydo-survey-responses';
 function load() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { return []; }
 }
-function save(data) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+
+function avg(arr) {
+  const vals = arr.filter(Boolean);
+  return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : null;
 }
 
-function avg(arr) { return arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : '—'; }
-
-// ── RENDER ─────────────────────────────────────────
 function render() {
   const data = load();
   renderStats(data);
-  renderLogoCharts(data);
-  renderIconCharts(data);
-  renderWinnerChart(data);
+  renderPaletteChart(data);
+  renderLogoChart(data);
+  renderIconChart(data);
+  renderLockupChart(data);
   renderTable(data);
 }
 
 function renderStats(data) {
   const n = data.length;
-  const winnerCounts = {};
-  PALETTES.forEach(p => winnerCounts[p.id] = 0);
-  data.forEach(r => { if (r.winner) winnerCounts[r.winner] = (winnerCounts[r.winner]||0)+1; });
-  const topWinner = n ? PALETTES.reduce((a,b) => winnerCounts[a.id] >= winnerCounts[b.id] ? a : b) : null;
+  const paletteCounts = {};
+  PALETTES.forEach(p => paletteCounts[p.id] = 0);
+  data.forEach(r => { if (r.winner) paletteCounts[r.winner] = (paletteCounts[r.winner]||0)+1; });
+  const top = n ? PALETTES.reduce((a,b) => paletteCounts[a.id] >= paletteCounts[b.id] ? a : b) : null;
 
-  const avgLogo = n ? avg(data.flatMap(r => PALETTES.map(p => r.logo?.[p.id]).filter(Boolean))) : '—';
-  const avgIcon = n ? avg(data.flatMap(r => PALETTES.map(p => r.icon?.[p.id]).filter(Boolean))) : '—';
+  const allIconRatings = data.flatMap(r => Object.values(r.iconRatings||{}));
+  const avgIcon = avg(allIconRatings) || '—';
+  const allLockupRatings = data.flatMap(r => Object.values(r.lockupRatings||{}));
+  const avgLockup = avg(allLockupRatings) || '—';
 
   document.getElementById('statsRow').innerHTML = `
     <div class="stat-card">
@@ -277,75 +200,25 @@ function renderStats(data) {
       <div class="stat-label">Responses</div>
     </div>
     <div class="stat-card">
-      <div class="stat-val" style="color:var(--gold)">${avgLogo}</div>
-      <div class="stat-label">Avg logo score</div>
-    </div>
-    <div class="stat-card">
       <div class="stat-val" style="color:var(--gold)">${avgIcon}</div>
       <div class="stat-label">Avg icon score</div>
     </div>
-    <div class="stat-card" style="border-color:${topWinner ? topWinner.color+'44' : 'var(--border)'}">
-      <div class="stat-val" style="font-size:22px;font-weight:600;padding-top:6px">${topWinner ? topWinner.label.split(' & ')[0] : '—'}</div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--gold)">${avgLockup}</div>
+      <div class="stat-label">Avg lockup score</div>
+    </div>
+    <div class="stat-card" style="border-color:${top ? top.color+'44' : 'var(--border)'}">
+      <div class="stat-val" style="font-size:22px;font-weight:600;padding-top:6px">${top ? top.label.split(' & ')[0] : '—'}</div>
       <div class="stat-label">Leading palette</div>
     </div>`;
 }
 
-function renderLogoCharts(data) {
-  document.getElementById('logoCharts').innerHTML = PALETTES.map(p => {
-    const scores = data.map(r => r.logo?.[p.id]).filter(Boolean);
-    const average = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
-    const dist = [1,2,3,4,5].map(n => scores.filter(s => s===n).length);
-    const bars = [1,2,3,4,5].map((n,i) => {
-      const pct = scores.length ? Math.round(dist[i]/scores.length*100) : 0;
-      return `<div class="bar-row">
-        <div class="bar-name" style="font-size:12px;opacity:0.7">${n} star${n>1?'s':''}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${p.color}">
-          ${pct > 15 ? `<span class="bar-score">${dist[i]}</span>` : ''}
-        </div></div>
-        <div class="bar-count">${dist[i]}</div>
-      </div>`;
-    }).join('');
-    return `<div class="chart-card">
-      <div class="chart-label">Logo · ${p.label}</div>
-      <div style="font-family:var(--font-sans);font-size:32px;font-weight:500;letter-spacing:-1.5px;color:${p.color};margin-bottom:16px">
-        ${scores.length ? average : '—'}<span style="font-size:16px;opacity:0.5;margin-left:4px">${scores.length ? `/ 5` : ''}</span>
-      </div>
-      ${bars}
-    </div>`;
-  }).join('');
-}
-
-function renderIconCharts(data) {
-  document.getElementById('iconCharts').innerHTML = PALETTES.map(p => {
-    const scores = data.map(r => r.icon?.[p.id]).filter(Boolean);
-    const average = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
-    const dist = [1,2,3,4,5].map(n => scores.filter(s => s===n).length);
-    const bars = [1,2,3,4,5].map((n,i) => {
-      const pct = scores.length ? Math.round(dist[i]/scores.length*100) : 0;
-      return `<div class="bar-row">
-        <div class="bar-name" style="font-size:12px;opacity:0.7">${n} star${n>1?'s':''}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${p.color}">
-          ${pct > 15 ? `<span class="bar-score">${dist[i]}</span>` : ''}
-        </div></div>
-        <div class="bar-count">${dist[i]}</div>
-      </div>`;
-    }).join('');
-    return `<div class="chart-card">
-      <div class="chart-label">Icon · ${p.label}</div>
-      <div style="font-family:var(--font-sans);font-size:32px;font-weight:500;letter-spacing:-1.5px;color:${p.color};margin-bottom:16px">
-        ${scores.length ? average : '—'}<span style="font-size:16px;opacity:0.5;margin-left:4px">${scores.length ? `/ 5` : ''}</span>
-      </div>
-      ${bars}
-    </div>`;
-  }).join('');
-}
-
-function renderWinnerChart(data) {
+function renderPaletteChart(data) {
   const total = data.filter(r => r.winner).length;
-  document.getElementById('winnerChart').innerHTML = PALETTES.map(p => {
+  document.getElementById('paletteChart').innerHTML = PALETTES.map(p => {
     const n = data.filter(r => r.winner === p.id).length;
     const pct = total ? Math.round(n/total*100) : 0;
-    return `<div class="winner-stat" style="background:${p.bg}20;border:1px solid ${p.color}33">
+    return `<div class="winner-stat" style="background:${p.bg};border:1px solid ${p.color}33">
       <div class="winner-count" style="color:${p.color}">${n}</div>
       <div class="winner-name">${p.label}</div>
       <div class="winner-pct">${pct}% of votes</div>
@@ -353,23 +226,74 @@ function renderWinnerChart(data) {
   }).join('');
 }
 
+function renderLogoChart(data) {
+  const total = data.filter(r => r.logo).length;
+  const maxCount = Math.max(1, ...LOGOS.map(l => data.filter(r => r.logo === l.id).length));
+  document.getElementById('logoChart').innerHTML = LOGOS.map(l => {
+    const n = data.filter(r => r.logo === l.id).length;
+    const pct = maxCount ? Math.round(n/maxCount*100) : 0;
+    return `<div class="bar-row">
+      <div class="bar-name">Option ${l.id} · ${l.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--gold)">
+        ${pct > 15 ? `<span class="bar-score">${n}</span>` : ''}
+      </div></div>
+      <div class="bar-count">${n}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderIconChart(data) {
+  const maxAvg = Math.max(1, ...ICONS.map(ic => {
+    const scores = data.map(r => r.iconRatings?.[ic.id]).filter(Boolean);
+    return scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : 0;
+  }));
+  document.getElementById('iconChart').innerHTML = ICONS.map(ic => {
+    const scores = data.map(r => r.iconRatings?.[ic.id]).filter(Boolean);
+    const average = avg(scores);
+    const pct = average ? Math.round((parseFloat(average)/5)*100) : 0;
+    return `<div class="bar-row">
+      <div class="bar-name">${ic.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:#2EA6B8">
+        ${pct > 15 ? `<span class="bar-score">${average}</span>` : ''}
+      </div></div>
+      <div class="bar-count">${average ? `${average}/5` : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLockupChart(data) {
+  document.getElementById('lockupChart').innerHTML = LOCKUPS.map(l => {
+    const scores = data.map(r => r.lockupRatings?.[l.id]).filter(Boolean);
+    const average = avg(scores);
+    const pct = average ? Math.round((parseFloat(average)/5)*100) : 0;
+    return `<div class="bar-row">
+      <div class="bar-name">${l.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:#B66E3C">
+        ${pct > 15 ? `<span class="bar-score">${average}</span>` : ''}
+      </div></div>
+      <div class="bar-count">${average ? `${average}/5` : '—'}</div>
+    </div>`;
+  }).join('');
+}
+
 function renderTable(data) {
   if (!data.length) {
-    document.getElementById('responsesTable').innerHTML = `<div class="empty-state">No responses yet.<br/>Click "Log a response" to add your first vote.</div>`;
+    document.getElementById('responsesTable').innerHTML = `<div class="empty-state">No responses yet.<br/>Responses will appear here automatically after survey submissions.</div>`;
     return;
   }
   const rows = [...data].reverse().map((r, ri) => {
-    const winnerPal = PALETTES.find(p => p.id === r.winner);
-    const logoScores = PALETTES.map(p => `${p.label.split(' ')[0]}:${r.logo?.[p.id]||'?'}`).join(' · ');
-    const iconScores = PALETTES.map(p => `${p.label.split(' ')[0]}:${r.icon?.[p.id]||'?'}`).join(' · ');
+    const pal = PALETTES.find(p => p.id === r.winner);
     const realIdx = data.length - 1 - ri;
+    const iconStr = ICONS.map(ic => `${ic.name.split(' ')[0]}:${r.iconRatings?.[ic.id]||'—'}`).join(' · ');
+    const lockupStr = LOCKUPS.map(l => `${l.name}:${r.lockupRatings?.[l.id]||'—'}`).join(' · ');
     return `<tr>
       <td style="opacity:0.4;font-family:var(--font-mono);font-size:11px">#${data.length - ri}</td>
       <td><strong>${r.name||'—'}</strong><br/><span style="opacity:0.4;font-size:11px">${r.role||''}</span></td>
-      <td>${winnerPal ? `<span class="palette-dot" style="background:${winnerPal.color}"></span>${winnerPal.label}` : '—'}</td>
-      <td style="font-family:var(--font-mono);font-size:10px;opacity:0.55;white-space:nowrap">${logoScores}</td>
-      <td style="font-family:var(--font-mono);font-size:10px;opacity:0.55;white-space:nowrap">${iconScores}</td>
-      <td style="max-width:180px;font-size:12px;opacity:0.65">${r.comment||'—'}</td>
+      <td>${pal ? `<span class="palette-dot" style="background:${pal.color}"></span>${pal.label}` : '—'}</td>
+      <td>${r.logo ? `Option ${r.logo}` : '—'}</td>
+      <td style="font-family:var(--font-mono);font-size:10px;opacity:0.55">${iconStr}</td>
+      <td style="font-family:var(--font-mono);font-size:10px;opacity:0.55">${lockupStr}</td>
+      <td style="max-width:160px;font-size:12px;opacity:0.65">${r.comment||'—'}</td>
       <td><button class="del-btn" onclick="deleteResponse(${realIdx})">✕</button></td>
     </tr>`;
   }).join('');
@@ -378,7 +302,7 @@ function renderTable(data) {
     <div style="overflow-x:auto">
     <table>
       <thead><tr>
-        <th>#</th><th>Name</th><th>Winner pick</th><th>Logo scores</th><th>Icon scores</th><th>Comment</th><th></th>
+        <th>#</th><th>Name</th><th>Palette</th><th>Logo</th><th>Icon ratings</th><th>Lockup ratings</th><th>Comment</th><th></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
@@ -389,79 +313,15 @@ function deleteResponse(idx) {
   if (!confirm('Remove this response?')) return;
   const data = load();
   data.splice(idx, 1);
-  save(data);
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
   render();
 }
 
 function clearAll() {
   if (!confirm('Delete ALL responses? This cannot be undone.')) return;
-  save([]);
+  localStorage.removeItem(STORE_KEY);
   render();
 }
-
-// ── MODAL ───────────────────────────────────────────
-let modalRatings = { logo: {}, icon: {}, winner: null };
-
-function buildRatingRow(type, p) {
-  const btns = [1,2,3,4,5].map(n =>
-    `<button class="r-btn ${modalRatings[type][p.id]===n?'sel':''}" onclick="setModalRating('${type}','${p.id}',${n},this)">${n}</button>`
-  ).join('');
-  return `<div style="display:flex;align-items:center;gap:10px">
-    <div style="font-size:12px;min-width:120px;color:${p.color}">${p.label}</div>
-    <div class="rating-row" style="flex:1">${btns}</div>
-  </div>`;
-}
-
-function buildWinnerOption(p) {
-  return `<div class="w-opt ${modalRatings.winner===p.id?'sel':''}" onclick="setWinner('${p.id}',this)" style="color:${p.color}">${p.label}</div>`;
-}
-
-function openModal() {
-  modalRatings = { logo: {}, icon: {}, winner: null };
-  document.getElementById('m-name').value = '';
-  document.getElementById('m-role').value = '';
-  document.getElementById('m-comment').value = '';
-  document.getElementById('logoRatings').innerHTML = PALETTES.map(p => buildRatingRow('logo', p)).join('');
-  document.getElementById('iconRatings').innerHTML = PALETTES.map(p => buildRatingRow('icon', p)).join('');
-  document.getElementById('winnerSelect').innerHTML = PALETTES.map(p => buildWinnerOption(p)).join('');
-  document.getElementById('modalBg').classList.add('open');
-}
-
-function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-
-function setModalRating(type, id, val, btn) {
-  modalRatings[type][id] = val;
-  const siblings = btn.closest('.rating-row').querySelectorAll('.r-btn');
-  siblings.forEach((b, i) => { b.classList.toggle('sel', i < val); });
-}
-
-function setWinner(id, el) {
-  modalRatings.winner = id;
-  document.querySelectorAll('.w-opt').forEach(e => e.classList.remove('sel'));
-  el.classList.add('sel');
-}
-
-function saveResponse() {
-  const entry = {
-    name: document.getElementById('m-name').value.trim(),
-    role: document.getElementById('m-role').value.trim(),
-    comment: document.getElementById('m-comment').value.trim(),
-    winner: modalRatings.winner,
-    logo: { ...modalRatings.logo },
-    icon: { ...modalRatings.icon },
-    time: Date.now(),
-  };
-  const data = load();
-  data.push(entry);
-  save(data);
-  closeModal();
-  render();
-}
-
-// Close modal on bg click
-document.getElementById('modalBg').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
 
 render();
 </script>

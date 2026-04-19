@@ -694,6 +694,21 @@ async function submitSurvey() {
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error();
+    // Save to localStorage so dashboard can read it
+    const stored = JSON.parse(localStorage.getItem('navydo-survey-responses') || '[]');
+    stored.push({
+      name: state.name || 'Anonymous',
+      role: state.role || '—',
+      winner: state.palette,
+      logo: state.logo,
+      lockupRatings: { ...state.lockupRatings },
+      iconRatings: { ...state.iconRatings },
+      favLockup: state.favLockup,
+      favIcon: state.favIcon,
+      comment: document.getElementById('resp-comment').value || '',
+      time: Date.now(),
+    });
+    localStorage.setItem('navydo-survey-responses', JSON.stringify(stored));
     document.getElementById('screen-5').classList.remove('active');
     document.getElementById('screen-done').classList.add('active');
     document.getElementById('progressBar').style.opacity = '0';
