@@ -186,6 +186,15 @@ img { display: block; max-width: 100%; }
 }
 .r-btn:hover { border-color: var(--ink); background: var(--bone); }
 .r-btn.active { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+.pick-btn {
+  width: 100%; padding: 8px; border-radius: 7px;
+  border: 1.5px solid var(--ink-faint); background: transparent;
+  font-family: var(--sans); font-size: 12px; font-weight: 500; color: var(--ink);
+  cursor: pointer; transition: all 0.15s;
+}
+.pick-btn:hover { border-color: var(--ink); background: var(--bone-deep); }
+.pick-btn-active { background: var(--ink) !important; color: var(--bone) !important; border-color: var(--ink) !important; }
+.rating-card.lockup-picked { border-color: var(--ink) !important; }
 
 /* ── SUMMARY SCREEN ── */
 .summary-card {
@@ -281,7 +290,7 @@ img { display: block; max-width: 100%; }
     <div class="welcome-fields">
       <div>
         <label class="field-label" for="resp-name">Your name</label>
-        <input class="field-input" id="resp-name" type="text" placeholder="How should we credit your taste?" autocomplete="off"/>
+        <input class="field-input" id="resp-name" type="text" placeholder="e.g. John" autocomplete="off"/>
       </div>
       <div>
         <label class="field-label" for="resp-role">Your role</label>
@@ -289,6 +298,7 @@ img { display: block; max-width: 100%; }
           <option value="">Pick one…</option>
           <option>Driver / Travel Partner</option>
           <option>Customer / Passenger</option>
+          <option>Friend / Relative</option>
           <option>Navydo Team</option>
           <option>Advisor / Investor</option>
           <option>Designer</option>
@@ -571,11 +581,12 @@ function buildLockupGrid() {
   const grid = document.getElementById('lockupGrid');
   grid.innerHTML = LOCKUPS.map(l => {
     const rating = state.lockupRatings[l.id] || 0;
+    const isPicked = state.favLockup === l.id;
     const stars = [1,2,3,4,5].map(n =>
       `<button class="r-btn ${rating>=n?'active':''}" onclick="rateLockup('${l.id}',${n})">${n}</button>`
     ).join('');
     return `
-      <div class="rating-card ${rating?'has-rating':''}" id="lcard-${l.id}">
+      <div class="rating-card ${rating?'has-rating':''} ${isPicked?'lockup-picked':''}" id="lcard-${l.id}">
         <div class="rating-card-img">
           <img src="survey-assets/lockups/lockup-${l.id}-${pal}.png" alt="${l.name}" loading="lazy"/>
         </div>
@@ -586,6 +597,9 @@ function buildLockupGrid() {
           </div>
           <div class="rating-label" style="margin-bottom:8px">Rate this lockup</div>
           <div class="rating-row">${stars}</div>
+          <button class="pick-btn ${isPicked?'pick-btn-active':''}" onclick="pickLockup('${l.id}')" style="margin-top:10px">
+            ${isPicked ? '✓ Your favourite' : 'Pick as favourite'}
+          </button>
         </div>
       </div>`;
   }).join('');
@@ -593,9 +607,11 @@ function buildLockupGrid() {
 
 function rateLockup(id, val) {
   state.lockupRatings[id] = val;
-  // Update highest-rated as fav
-  const maxId = Object.entries(state.lockupRatings).sort((a,b)=>b[1]-a[1])[0]?.[0];
-  state.favLockup = maxId;
+  buildLockupGrid();
+}
+
+function pickLockup(id) {
+  state.favLockup = state.favLockup === id ? null : id;
   buildLockupGrid();
 }
 
