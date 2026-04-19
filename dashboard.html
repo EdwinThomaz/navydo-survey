@@ -75,6 +75,26 @@
   .del-btn { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 14px; opacity: 0.5; }
   .del-btn:hover { opacity: 1; }
   .empty-state { padding: 48px; text-align: center; opacity: 0.3; font-size: 14px; }
+
+  .sync-bar {
+    background: #1e1e1e; border-bottom: 1px solid var(--border);
+    padding: 14px 32px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .sync-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.45; white-space: nowrap; }
+  .sync-input {
+    flex: 1; min-width: 240px; background: #2a2a2a; border: 1px solid #444; border-radius: 7px;
+    padding: 8px 12px; color: #e8e3d6; font-family: var(--font-mono); font-size: 13px; outline: none;
+  }
+  .sync-input:focus { border-color: var(--gold); }
+  .sync-btn {
+    background: var(--gold); color: #1a1a1a; border: none;
+    padding: 9px 20px; border-radius: 7px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+  }
+  .sync-btn:hover { opacity: 0.85; }
+  .sync-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .sync-status { font-family: var(--font-mono); font-size: 11px; opacity: 0.5; }
 </style>
 </head>
 <body>
@@ -91,6 +111,13 @@
   </div>
   <button onclick="clearAll()" style="background:none;border:1px solid #444;color:#ff6b6b;padding:10px 18px;border-radius:7px;font-family:var(--font-sans);font-size:13px;cursor:pointer;">Clear all</button>
 </header>
+
+<div class="sync-bar">
+  <span class="sync-label">Formspree API Key</span>
+  <input class="sync-input" id="apiKeyInput" type="password" placeholder="Paste your Formspree API key…"/>
+  <button class="sync-btn" id="syncBtn" onclick="syncFromFormspree()">↓ Sync responses</button>
+  <span class="sync-status" id="syncStatus"></span>
+</div>
 
 <main>
   <div class="stats-row" id="statsRow"></div>
@@ -322,6 +349,88 @@ function clearAll() {
   localStorage.removeItem(STORE_KEY);
   render();
 }
+
+// ── FORMSPREE SYNC ──────────────────────────────────────
+const FORM_ID = 'xjgjrlve';
+const API_KEY_STORE = 'navydo-formspree-apikey';
+
+const PALETTE_LABEL_MAP = {
+  'Forest & Bone': 'forest',
+  'Plum & Copper': 'plum',
+  'Midnight & Cyan': 'midnight',
+  'Clay & Terracotta': 'clay',
+};
+
+function mapFormspreeSubmission(s) {
+  const d = s.data || s;
+  const paletteId = PALETTE_LABEL_MAP[d.palette] || d.palette || null;
+  const logoChoice = d.logo_choice ? d.logo_choice.split(/[—\-]/)[0].trim() : null;
+  let lockupRatings = {};
+  let iconRatings = {};
+  try { lockupRatings = JSON.parse(d.lockup_ratings || '{}'); } catch {}
+  try { iconRatings = JSON.parse(d.icon_ratings || '{}'); } catch {}
+  return {
+    name: d.name || 'Anonymous',
+    role: d.role || '—',
+    winner: paletteId,
+    logo: logoChoice,
+    lockupRatings,
+    iconRatings,
+    favLockup: d.lockup_fav || null,
+    favIcon: d.icon_fav || null,
+    comment: d.comment || '',
+    time: s.created_at ? new Date(s.created_at).getTime() : Date.now(),
+    _formspreeId: s.id || null,
+  };
+}
+
+async function syncFromFormspree() {
+  const keyInput = document.getElementById('apiKeyInput');
+  const btn = document.getElementById('syncBtn');
+  const status = document.getElementById('syncStatus');
+  const apiKey = keyInput.value.trim() || localStorage.getItem(API_KEY_STORE);
+
+  if (!apiKey) {
+    status.textContent = 'Paste your API key first.';
+    status.style.color = '#ff6b6b';
+    return;
+  }
+
+  localStorage.setItem(API_KEY_STORE, apiKey);
+  btn.disabled = true;
+  btn.textContent = 'Syncing…';
+  status.textContent = '';
+
+  try {
+    const res = await fetch(`https://api.formspree.io/api/0/forms/${FORM_ID}/submissions`, {
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' },
+    });
+
+    if (res.status === 401) throw new Error('Invalid API key — check your Formspree account.');
+    if (!res.ok) throw new Error(`Formspree error: ${res.status}`);
+
+    const json = await res.json();
+    const submissions = json.submissions || json.data || [];
+    const mapped = submissions.map(mapFormspreeSubmission);
+
+    localStorage.setItem(STORE_KEY, JSON.stringify(mapped));
+    status.textContent = `✓ ${mapped.length} response${mapped.length !== 1 ? 's' : ''} synced`;
+    status.style.color = '#6fcf97';
+    render();
+  } catch (err) {
+    status.textContent = err.message || 'Sync failed. Try again.';
+    status.style.color = '#ff6b6b';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↓ Sync responses';
+  }
+}
+
+// Restore saved API key on load
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem(API_KEY_STORE);
+  if (saved) document.getElementById('apiKeyInput').value = saved;
+});
 
 render();
 </script>
