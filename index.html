@@ -688,12 +688,9 @@ async function submitSurvey() {
   };
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload),
-    });
+    const params = new URLSearchParams();
+    params.append('data', JSON.stringify(payload));
+    await fetch(APPS_SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
   } catch (err) {
     console.warn('Submission warning:', err);
   }

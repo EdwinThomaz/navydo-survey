@@ -1,14 +1,13 @@
-// Paste this entire file into Google Apps Script
-// Extensions → Apps Script → delete everything → paste → Save → Deploy
+// Paste this into Google Apps Script → Save → New deployment (or redeploy existing)
 
-const NOTIFY_EMAIL = 'edwint.inbox@gmail.com';
+const NOTIFY_EMAIL = 'edwint.inbox@navydo.com';
 
-function doPost(e) {
+function doGet(e) {
   try {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const data = JSON.parse(e.postData.contents);
+    const data = JSON.parse(e.parameter.data);
 
-    // Add headers on first submission
+    // Add headers on first row
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
         'Timestamp', 'Name', 'Role', 'Palette',
@@ -31,7 +30,6 @@ function doPost(e) {
       data.comment || '',
     ]);
 
-    // Email notification
     MailApp.sendEmail({
       to: NOTIFY_EMAIL,
       subject: `Navydo Survey — ${data.name || 'Anonymous'} voted ${data.palette || ''}`,
