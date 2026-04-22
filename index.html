@@ -223,11 +223,12 @@ img { display: block; max-width: 100%; }
 /* ── NONE OPTION ── */
 .none-option {
   display: flex; align-items: center; gap: 8px;
-  padding: 14px 18px; margin-bottom: 24px;
+  padding: 14px 18px; margin-top: 24px; margin-bottom: 24px;
   border: 1.5px dashed var(--ink-faint); border-radius: 10px;
   cursor: pointer; font-size: 13px; color: var(--ink-mid);
   font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; font-size: 10px;
-  transition: all 0.2s;
+  transition: all 0.2s; position: relative; z-index: 1;
+  -webkit-tap-highlight-color: transparent;
 }
 .none-option:hover { border-color: rgba(20,51,42,0.3); color: var(--ink); }
 .none-option.active { background: rgba(20,51,42,0.05); border-color: var(--ink); color: var(--ink); }
@@ -321,7 +322,7 @@ img { display: block; max-width: 100%; }
       <p class="step-sub">Colors set the mood. Tap a circle.</p>
     </div>
     <div class="palette-grid" id="paletteGrid"></div>
-    <div class="none-option" id="noPalette" onclick="toggleNone('palette')">
+    <div class="none-option" id="noPalette" onclick="toggleNone('palette', event)">
       <span>+</span> None of these excite me — give feedback
     </div>
     <div class="nav-row">
@@ -340,7 +341,7 @@ img { display: block; max-width: 100%; }
       <p class="step-sub" id="logoPaletteSub">Shown in your chosen palette. Pick the mark that feels most Navydo.</p>
     </div>
     <div class="logo-grid" id="logoGrid"></div>
-    <div class="none-option" id="noLogo" onclick="toggleNone('logo')">
+    <div class="none-option" id="noLogo" onclick="toggleNone('logo', event)">
       <span>+</span> None of these excite me — try different logo directions
     </div>
     <div class="nav-row">
@@ -497,9 +498,16 @@ function updateProgress(n) {
   });
 }
 
-function toggleNone(key) {
+function toggleNone(key, event) {
+  if (event) event.stopPropagation();
   state.noneFlags[key] = !state.noneFlags[key];
-  document.getElementById(`no${key.charAt(0).toUpperCase()+key.slice(1)}`).classList.toggle('active', state.noneFlags[key]);
+  const cap = key.charAt(0).toUpperCase() + key.slice(1);
+  document.getElementById(`no${cap}`).classList.toggle('active', state.noneFlags[key]);
+  if (key === 'palette') {
+    document.getElementById('nextFromPalette').disabled = !state.palette && !state.noneFlags[key];
+  } else if (key === 'logo') {
+    document.getElementById('nextFromLogo').disabled = !state.logo && !state.noneFlags[key];
+  }
 }
 
 // ── PALETTE WHEEL SVG ──────────────────────────────────
